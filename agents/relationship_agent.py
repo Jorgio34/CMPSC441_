@@ -1,28 +1,30 @@
-from .base_agent import BaseAgent
+# agents/relationship_agent.py
+
+from agents.base_agent import BaseAgent
 
 class RelationshipAgent(BaseAgent):
     def __init__(self):
-        self.relationships = {}  # (player, npc): score
+        super().__init__()
+        self.relationships = {}
 
-    def adjust_relationship(self, player, npc, delta):
-        key = (player, npc)
-        self.relationships[key] = self.relationships.get(key, 50) + delta
+    def interact(self, player1, player2, interaction_type):
+        key = tuple(sorted([player1, player2]))
+        if key not in self.relationships:
+            self.relationships[key] = 0
 
-    def get_status(self, player, npc):
-        score = self.relationships.get((player, npc), 50)
-        if score >= 80:
-            return "Trusted Ally"
-        elif score >= 60:
-            return "Friendly"
-        elif score >= 40:
-            return "Neutral"
-        elif score >= 20:
-            return "Suspicious"
+        # Example: positive interaction increases relationship
+        if "help" in interaction_type.lower():
+            self.relationships[key] += 10
+            return f"{player1} helped {player2}. ❤️ Relationship improved to {self.relationships[key]}."
+        elif "argue" in interaction_type.lower():
+            self.relationships[key] -= 10
+            return f"{player1} argued with {player2}. 💔 Relationship dropped to {self.relationships[key]}."
         else:
-            return "Hostile"
+            return f"{player1} and {player2} interacted. 🤝 No major change."
 
-    def respond(self, input_text: str, context: dict) -> str:
-        player = context.get("player")
-        npc = context.get("npc")
-        status = self.get_status(player, npc)
-        return f"{npc} views {player} as a {status}."
+    def get_relationship(self, player1, player2):
+        key = tuple(sorted([player1, player2]))
+        return self.relationships.get(key, 0)
+
+    def respond(self, *args, **kwargs):
+        return "Use `.interact()` to engage in relationship actions."
