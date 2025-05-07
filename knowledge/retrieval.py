@@ -440,7 +440,7 @@ def _generate_location_lore(location: str) -> str:
         ],
         "dungeon": [
             f"The {location} is a notorious dungeon said to be filled with {random.choice(['ancient treasures', 'deadly traps', 'forgotten magic', 'terrible monsters'])}. Few who enter have returned to tell tales of its {random.choice(['labyrinthine corridors', 'multiple levels', 'strange phenomena', 'undead guardians'])}.",
-            f"Legends claim {location} was once {random.choice(['a dwarf fortress', 'a wizard\'s laboratory', 'a temple to dark gods', 'a prison for magical creatures'])}. Adventurers are drawn to its depths by rumors of {random.choice(['untold riches', 'powerful artifacts', 'forgotten knowledge', 'a gateway to other planes'])}."
+            f"Legends claim {location} was once {random.choice(['a dwarf fortress', 'a wizard laboratory', 'a temple to dark gods', 'a prison for magical creatures'])}. Adventurers are drawn to its depths by rumors of {random.choice(['untold riches', 'powerful artifacts', 'forgotten knowledge', 'a gateway to other planes'])}."
         ],
         "forest": [
             f"The {location} stretches for many leagues, its ancient trees home to {random.choice(['elven communities', 'fey creatures', 'territorial druids', 'reclusive beasts'])}. Travelers tell of {random.choice(['paths that shift', 'strange lights at night', 'enchanted clearings', 'trees that whisper secrets'])}.",
@@ -480,7 +480,7 @@ def _generate_person_lore(person: str) -> str:
         ],
         "hero": [
             f"Tales of {person}'s heroic deeds include {random.choice(['slaying a legendary monster', 'breaking an ancient curse', 'saving a noble family', 'uncovering a sinister plot'])}. Bards sing of their {random.choice(['unmatched combat prowess', 'clever tactics', 'inspiring leadership', 'selfless sacrifice'])} in the face of overwhelming odds.",
-            f"The hero known as {person} carries {random.choice(['an ancestral weapon of great power', 'scars from countless battles', 'tokens from those they\'ve saved', 'a mysterious legacy'])}. Some say they were {random.choice(['chosen by destiny', 'born under a special star', 'blessed by the gods', 'the subject of an ancient prophecy'])}."
+            f"The hero known as {person} carries {random.choice(['an ancestral weapon of great power', 'scars from countless battles', 'tokens from those they have saved', 'a mysterious legacy'])}. Some say they were {random.choice(['chosen by destiny', 'born under a special star', 'blessed by the gods', 'the subject of an ancient prophecy'])}."
         ]
     }
     

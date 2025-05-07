@@ -320,11 +320,8 @@ class AdventureAgent(BaseAgent):
             "description": f"A {puzzle_type} puzzle integrated into the {location_type}, themed around {theme}.",
             "solve_method": random.choice(["Intelligence check", "skill challenge", "combining items", "finding clues",
                                           "trial and error", "replicating pattern", "manipulating environment"]),
-            "clues": [f"Clue hidden in {random.choice(['nearby wall carving', 'ancient text', 'pattern on the floor', 
-                                                     'arrangement of objects', 'magical illumination'])}"],
-            "reward": f"When solved, the puzzle {random.choice(['reveals a secret passage', 'provides a valuable item', 
-                                                              'deactivates traps', 'strengthens the party temporarily', 
-                                                              'reveals crucial information'])}"
+            "clues": [f"Clue hidden in {random.choice(['nearby wall carving', 'ancient text', 'pattern on the floor', 'mysterious symbols'])}"],
+            "reward": f"When solved, the puzzle {random.choice(['reveals a secret passage', 'provides a valuable item', 'deactivates traps', 'strengthens the party temporarily', 'reveals crucial information'])}"
         }
     
     def _generate_discovery_encounter(self, location_type: str, theme: str) -> Dict[str, Any]:
@@ -339,11 +336,8 @@ class AdventureAgent(BaseAgent):
             "type": "discovery",
             "subtype": discovery_type,
             "description": f"The party discovers {discovery_type} in the {location_type} related to {theme}.",
-            "significance": f"This discovery {random.choice(['reveals important plot information', 'provides historical context',
-                                                           'offers a useful resource', 'poses a moral dilemma', 
-                                                           'connects to party backstory'])}.",
-            "interaction": f"The party can {random.choice(['examine it closely', 'take it with them', 'activate its powers',
-                                                         'learn from its contents', 'report it to authorities'])}"
+            "significance": f"This discovery {random.choice(['reveals important plot information', 'provides historical context','offers a useful resource', 'poses a moral dilemma', 'connects to party backstory'])}.",
+            "interaction": f"The party can {random.choice(['examine it closely', 'take it with them', 'activate its powers','learn from its contents', 'report it to authorities'])}"
         }
     
     def _generate_npcs(self, region: str, theme: str, party_level: int, num_npcs: int) -> List[Dict[str, Any]]:
