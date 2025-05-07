@@ -279,7 +279,36 @@ def set_all_loggers_level(level: str) -> None:
     for logger in _loggers.values():
         logger.setLevel(log_level)
 
-
+def setup_logging(level="INFO", log_to_file=True, log_filename=None, debug=False):
+    """
+    Set up the logging system for the D&D AI Assistant.
+    
+    Args:
+        level: Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        log_to_file: Whether to log to file
+        log_filename: Custom log file name (if None, uses default name)
+        debug: If True, set log level to DEBUG regardless of level parameter
+        
+    Returns:
+        Configured root logger
+    """
+    # Set level to DEBUG if debug flag is True
+    if debug:
+        level = "DEBUG"
+    
+    # Set up the root logger
+    root_logger = setup_root_logger(
+        level=level,
+        log_to_console=True,
+        log_to_file=log_to_file
+    )
+    
+    # Set log level on all existing loggers
+    set_all_loggers_level(level)
+    
+    logger.info(f"Logging system initialized at level {level}")
+    
+    return root_logger
 # Create default logger for this module
 logger = setup_root_logger()
 

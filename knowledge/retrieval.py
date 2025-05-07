@@ -268,6 +268,181 @@ def retrieve_monster(monster_name: str) -> Dict[str, Any]:
     logger.warning(f"No monster found for '{monster_name}'")
     return {}
 
+def retrieve_combat_descriptions(description_type: str, weapon_type: str = None, monster_type: str = None) -> str:
+    """
+    Retrieve combat descriptions for hits, misses, etc.
+    
+    Args:
+        description_type: Type of description ("hit", "miss", "enemy_hit", "enemy_miss", etc.)
+        weapon_type: Type of weapon used (optional)
+        monster_type: Type of monster (optional)
+        
+    Returns:
+        Combat description as a string
+    """
+    # Dictionary of combat descriptions
+    combat_descriptions = {
+        "hit": {
+            "generic": [
+                "The attack lands with devastating force",
+                "The attack strikes true, hitting its mark",
+                "A powerful blow connects with the target",
+                "The attack finds a gap in the target's defenses"
+            ],
+            "sword": [
+                "The sword slices through the enemy's defenses",
+                "The blade cleaves into the target with a satisfying impact",
+                "The sword carves a gash across the enemy",
+                "The blade strikes with precision"
+            ],
+            "axe": [
+                "The axe crashes down with brutal force",
+                "The axe bites deeply into the target",
+                "The heavy axe head connects with a solid thud",
+                "The axe cleaves through armor with ease"
+            ],
+            "mace": [
+                "The mace crushes against the target with a dull crunch",
+                "The heavy mace smashes into the enemy",
+                "The mace connects with bone-crushing force",
+                "The mace delivers a stunning blow"
+            ],
+            "bow": [
+                "The arrow pierces the target with precision",
+                "The shot finds a vulnerable spot",
+                "The arrow flies true to its mark",
+                "The arrow sinks deep into the target"
+            ],
+            "dagger": [
+                "The dagger slips between the gaps in armor",
+                "The blade strikes a vulnerable point",
+                "The dagger finds its mark with surgical precision",
+                "The quick strike catches the enemy by surprise"
+            ]
+        },
+        "miss": {
+            "generic": [
+                "The attack narrowly misses its target",
+                "The enemy deftly evades the attack",
+                "The attack is deflected at the last moment",
+                "The attack fails to connect"
+            ],
+            "sword": [
+                "The sword swings wide, missing the target",
+                "The blade is parried aside",
+                "The sword strike is anticipated and avoided",
+                "The sword meets only air as the enemy dodges"
+            ],
+            "axe": [
+                "The axe embeds into the ground as the enemy steps aside",
+                "The heavy axe swing is too slow to connect",
+                "The axe crashes down but the enemy is no longer there",
+                "The enemy blocks the axe with their shield"
+            ],
+            "mace": [
+                "The mace swings harmlessly past",
+                "The enemy sidesteps the heavy mace blow",
+                "The mace connects only with the ground, sending up dust",
+                "The unwieldy mace is easily avoided"
+            ],
+            "bow": [
+                "The arrow flies wide of its mark",
+                "The target shifts at the last moment, avoiding the shot",
+                "The arrow deflects off armor without causing harm",
+                "The shot misses by inches"
+            ],
+            "dagger": [
+                "The quick strike is anticipated and blocked",
+                "The dagger finds only empty air",
+                "The target twists away from the blade",
+                "The dagger's point is turned aside"
+            ]
+        },
+        "enemy_hit": {
+            "generic": [
+                "The creature strikes with frightening precision",
+                "The attack tears into you painfully",
+                "The blow lands with unexpected force",
+                "The attack catches you off-guard"
+            ],
+            "humanoid": [
+                "The enemy's weapon finds a gap in your armor",
+                "The attack slips past your defenses",
+                "The foe's strike is surprisingly effective",
+                "The blow lands exactly where you're most vulnerable"
+            ],
+            "beast": [
+                "The creature's claws tear through your defenses",
+                "Its fangs sink into you painfully",
+                "The beast's attack is wild but effective",
+                "The creature's natural weapons find their mark"
+            ],
+            "undead": [
+                "The undead's cold touch drains warmth where it strikes",
+                "The rotting limb delivers a surprisingly powerful blow",
+                "The creature's unearthly strength drives the attack home",
+                "The undead's attack brings a momentary chill of the grave"
+            ],
+            "dragon": [
+                "The dragon's attack is devastatingly powerful",
+                "The massive claws tear through defenses like paper",
+                "The dragon's precisely aimed attack finds its mark",
+                "The creature's ancient might is brought to bear"
+            ]
+        },
+        "enemy_miss": {
+            "generic": [
+                "You manage to avoid the attack at the last moment",
+                "The creature's attack misses by inches",
+                "You deflect the attack skillfully",
+                "Your defensive maneuver prevents the attack from landing"
+            ],
+            "humanoid": [
+                "You parry the enemy's weapon aside",
+                "The foe's attack is anticipated and avoided",
+                "You sidestep the clumsy strike",
+                "Your armor deflects the worst of the blow"
+            ],
+            "beast": [
+                "The beast's attack is wild and easy to avoid",
+                "You dodge the creature's lunge",
+                "The beast's claws find only air as you move",
+                "The creature's attack is powerful but poorly aimed"
+            ],
+            "undead": [
+                "The shambling attack is slow enough to evade",
+                "The undead's deteriorated form fails in its attack",
+                "You recoil from the grotesque limb as it swings past",
+                "The creature's attack lacks the coordination to connect"
+            ],
+            "dragon": [
+                "Even the dragon's speed isn't enough to catch you",
+                "You narrowly avoid being crushed by the massive attack",
+                "Through luck or skill, you avoid the deadly attack",
+                "The dragon's confidence made its attack predictable"
+            ]
+        }
+    }
+    
+    # Select the appropriate description type
+    descriptions = combat_descriptions.get(description_type, {})
+    
+    # For player attacks, use weapon type if provided
+    if description_type in ["hit", "miss"] and weapon_type:
+        weapon_specific = descriptions.get(weapon_type.lower(), [])
+        if weapon_specific:
+            return random.choice(weapon_specific)
+    
+    # For enemy attacks, use monster type if provided
+    if description_type in ["enemy_hit", "enemy_miss"] and monster_type:
+        monster_specific = descriptions.get(monster_type.lower(), [])
+        if monster_specific:
+            return random.choice(monster_specific)
+    
+    # Default to generic descriptions
+    generic = descriptions.get("generic", ["The attack is made."])
+    return random.choice(generic)
+
 
 def retrieve_item(item_name: str) -> Dict[str, Any]:
     """
@@ -822,3 +997,225 @@ def delete_knowledge_entry(knowledge_type: str, name: str) -> bool:
     del KNOWLEDGE_BASE[knowledge_type][name]
     logger.info(f"Deleted {knowledge_type} entry: {name}")
     return True
+
+def retrieve_quest_templates(quest_type: str = None) -> List[Dict[str, Any]]:
+    """
+    Retrieve quest templates based on quest type.
+    
+    Args:
+        quest_type: Optional type of quest (rescue, fetch, kill, etc.)
+        
+    Returns:
+        List of quest templates
+    """
+    # Quest template database
+    quest_templates = {
+        "rescue": [
+            {
+                "title": "The Missing Villager",
+                "hook": "A local villager has gone missing in the nearby {location}. Their family fears the worst.",
+                "objective": "Rescue the missing villager from {enemy_group} that have taken them captive.",
+                "challenges": ["Navigate through dangerous territory", "Defeat or avoid the captors", "Escort the villager safely home"],
+                "rewards": {"gold": "250", "items": ["Potion of Healing", "Local favor"]}
+            },
+            {
+                "title": "Noble in Distress",
+                "hook": "The son/daughter of a prominent noble family has been kidnapped by {enemy_group}.",
+                "objective": "Rescue the noble from their kidnappers in the {location}.",
+                "challenges": ["Track down the kidnappers' hideout", "Deal with the ransom exchange", "Ensure the noble's safety"],
+                "rewards": {"gold": "500", "items": ["Letter of recommendation", "Fine jewelry"]}
+            }
+        ],
+        "fetch": [
+            {
+                "title": "The Lost Artifact",
+                "hook": "A valuable artifact has been lost in the {location}. It must be recovered before it falls into the wrong hands.",
+                "objective": "Find and retrieve the artifact from the {location}.",
+                "challenges": ["Solve ancient puzzles", "Avoid traps", "Compete with rival treasure hunters"],
+                "rewards": {"gold": "300", "items": ["Magic scroll", "Historical knowledge"]}
+            },
+            {
+                "title": "Rare Ingredients",
+                "hook": "A local alchemist needs rare ingredients that can only be found in the {location}.",
+                "objective": "Collect the rare ingredients and return them safely.",
+                "challenges": ["Identify the correct specimens", "Brave hazardous terrain", "Preserve the fragile ingredients"],
+                "rewards": {"gold": "200", "items": ["Potion of your choice", "Alchemist's favor"]}
+            }
+        ],
+        "kill": [
+            {
+                "title": "Beast Hunt",
+                "hook": "A dangerous beast has been terrorizing the countryside around {location}.",
+                "objective": "Track and kill the beast that's threatening the area.",
+                "challenges": ["Track the elusive creature", "Prepare for its special abilities", "Deliver proof of the kill"],
+                "rewards": {"gold": "400", "items": ["Trophy from the beast", "Local renown"]}
+            },
+            {
+                "title": "Bandit Leader",
+                "hook": "A notorious bandit leader and their gang have set up in the {location}.",
+                "objective": "Eliminate the bandit leader to restore safety to the region.",
+                "challenges": ["Find the hidden bandit camp", "Deal with the leader's bodyguards", "Decide the fate of surrendering bandits"],
+                "rewards": {"gold": "350", "items": ["Bandit's weapon", "Recovered stolen goods"]}
+            }
+        ],
+        "escort": [
+            {
+                "title": "Merchant Caravan",
+                "hook": "A merchant needs protection for their caravan traveling through {location}.",
+                "objective": "Safely escort the merchant caravan to its destination.",
+                "challenges": ["Defend against bandit attacks", "Navigate difficult terrain", "Manage resources for the journey"],
+                "rewards": {"gold": "300", "items": ["Trade discount", "Exotic goods"]}
+            },
+            {
+                "title": "Pilgrim's Journey",
+                "hook": "A pilgrim wishes to visit a sacred site in the dangerous {location}.",
+                "objective": "Escort the pilgrim safely to the sacred site and back.",
+                "challenges": ["Protect the vulnerable pilgrim", "Respect religious customs", "Deal with hostile locals"],
+                "rewards": {"gold": "250", "items": ["Religious blessing", "Ancient wisdom"]}
+            }
+        ],
+        "investigate": [
+            {
+                "title": "Strange Occurrences",
+                "hook": "Unusual events have been happening in {location}, causing concern among locals.",
+                "objective": "Investigate the strange occurrences and discover their cause.",
+                "challenges": ["Gather witness testimonies", "Connect seemingly unrelated events", "Confront the truth"],
+                "rewards": {"gold": "350", "items": ["Mysterious clue", "Local gratitude"]}
+            },
+            {
+                "title": "Missing Shipment",
+                "hook": "A valuable shipment has disappeared on its way to {location}.",
+                "objective": "Discover what happened to the missing shipment.",
+                "challenges": ["Follow the trail of evidence", "Question suspects", "Determine if theft or accident"],
+                "rewards": {"gold": "400", "items": ["Finder's fee", "Merchant guild favor"]}
+            }
+        ],
+        "defend": [
+            {
+                "title": "Village Under Siege",
+                "hook": "A small village near {location} is threatened by an imminent attack.",
+                "objective": "Help the villagers prepare defenses and repel the attack.",
+                "challenges": ["Organize villagers", "Set up defensive positions", "Lead the defense"],
+                "rewards": {"gold": "350", "items": ["Village elder's heirloom", "Safe haven"]}
+            },
+            {
+                "title": "Last Stand",
+                "hook": "An important location in {location} must be held against overwhelming odds.",
+                "objective": "Defend the position until reinforcements arrive.",
+                "challenges": ["Manage limited resources", "Maintain morale", "Strategic positioning"],
+                "rewards": {"gold": "500", "items": ["Military commendation", "Tactical advantage"]}
+            }
+        ]
+    }
+    
+    # If quest type is specified, return templates of that type
+    if quest_type and quest_type.lower() in quest_templates:
+        return quest_templates[quest_type.lower()]
+    
+    # If no quest type specified or not found, return a random selection
+    all_templates = []
+    for templates in quest_templates.values():
+        all_templates.extend(templates)
+    
+    # Return all templates or a random subset
+    if not quest_type:
+        return all_templates
+    else:
+        # Return a random selection if the specific type wasn't found
+        return random.sample(all_templates, min(3, len(all_templates)))
+
+def retrieve_location_info(location_name: str) -> Dict[str, Any]:
+    """
+    Retrieve information about a specific location.
+    
+    Args:
+        location_name: The name of the location
+        
+    Returns:
+        Dictionary containing location information
+    """
+    # Location database
+    locations = {
+        "dark forest": {
+            "type": "wilderness",
+            "description": "A dense forest where sunlight struggles to reach the ground. Ancient trees tower overhead, their gnarled branches creating a canopy that blocks the sky. The forest floor is covered in twisted roots, fallen logs, and patches of phosphorescent fungi.",
+            "inhabitants": ["Wolves", "Forest Goblins", "Giant Spiders", "Fey Creatures"],
+            "features": ["Ancient ruins", "Twisted trees", "Mysterious shrines", "Fog-filled clearings"],
+            "dangers": ["Getting lost in the shifting paths", "Predatory beasts", "Territorial fey", "Poisonous plants"],
+            "atmosphere": "Eerie and primeval, with strange sounds echoing through the trees and shadows that seem to move of their own accord."
+        },
+        "ancient ruins": {
+            "type": "dungeon",
+            "description": "The crumbling remains of a once-great civilization, now reclaimed by nature and darker forces. Fallen columns, shattered statues, and walls covered in mysterious carvings create a labyrinth of stone and shadow.",
+            "inhabitants": ["Undead", "Cultists", "Treasure Hunters", "Ancient Guardians"],
+            "features": ["Hidden chambers", "Trapped passages", "Forgotten treasures", "Ancient magic"],
+            "dangers": ["Collapsing structures", "Magical anomalies", "Awakened guardians", "Cursed artifacts"],
+            "atmosphere": "A heavy sense of history and decay, with the weight of forgotten ages pressing down on all who enter."
+        },
+        "mountain pass": {
+            "type": "wilderness",
+            "description": "A narrow route winding between towering peaks, offering the only safe passage through the treacherous mountain range. Sheer cliffs rise on either side, and the path frequently narrows to barely the width of a cart.",
+            "inhabitants": ["Mountain Goblins", "Griffons", "Rock Trolls", "Dwarf Patrols"],
+            "features": ["Breathtaking vistas", "Precarious bridges", "Hidden caves", "Avalanche-prone slopes"],
+            "dangers": ["Falling rocks", "Sudden storms", "Ambush points", "Treacherous footing"],
+            "atmosphere": "Exposed and vulnerable, with howling winds that carry echoes for miles and the constant awareness of being watched from above."
+        },
+        "coastal caves": {
+            "type": "dungeon",
+            "description": "A network of sea caves carved by centuries of relentless waves. The lower chambers flood with the rising tide, while the upper passages wind deep into the coastal cliffs. Salt crystals glitter on the walls, and the constant sound of dripping water and distant surf creates an otherworldly melody.",
+            "inhabitants": ["Smugglers", "Sahuagin", "Pirates", "Cave Fisher"],
+            "features": ["Underwater passages", "Hidden smuggler caches", "Natural bridges", "Bioluminescent fungi"],
+            "dangers": ["Rising tides", "Slippery rocks", "Cave-ins", "Territorial sea creatures"],
+            "atmosphere": "Damp and echoing, with the rhythmic sound of waves a constant reminder of the sea's power and the taste of salt on every breath."
+        },
+        "desert oasis": {
+            "type": "settlement",
+            "description": "A lush pocket of greenery amid the vast, merciless desert. Fed by an ancient spring, the oasis supports a small settlement that serves as a vital waypoint for caravans. Palm trees provide precious shade, and the contrast between the verdant growth and surrounding sands is striking.",
+            "inhabitants": ["Merchants", "Nomads", "Desert Druids", "Travelers from distant lands"],
+            "features": ["Crystal-clear pools", "Date palm groves", "Colorful market tents", "Ancient well"],
+            "dangers": ["Water disputes", "Bandits", "Desert predators", "Heat sickness"],
+            "atmosphere": "A haven of life and color in the barren wastes, with the constant bustle of travelers and traders creating a multicultural melting pot."
+        }
+    }
+    
+    # Convert location name to lowercase for case-insensitive matching
+    location_lower = location_name.lower()
+    
+    # Try direct lookup first
+    if location_lower in locations:
+        return locations[location_lower]
+    
+    # Try partial matches
+    for loc_key, loc_data in locations.items():
+        if location_lower in loc_key or loc_key in location_lower:
+            return loc_data
+    
+    # If no match found, generate a basic location template
+    location_types = ["wilderness", "dungeon", "settlement", "sacred site", "battlefield"]
+    
+    # Generate a basic location description
+    if "forest" in location_lower:
+        loc_type = "wilderness"
+        inhabitants = ["Forest Animals", "Bandits", "Fey Creatures"]
+        features = ["Tall trees", "Clearings", "Streams", "Wildlife"]
+    elif "ruins" in location_lower or "dungeon" in location_lower or "cave" in location_lower:
+        loc_type = "dungeon"
+        inhabitants = ["Monsters", "Undead", "Treasure Hunters"]
+        features = ["Crumbling walls", "Dark passages", "Ancient artifacts", "Traps"]
+    elif "town" in location_lower or "village" in location_lower or "city" in location_lower:
+        loc_type = "settlement"
+        inhabitants = ["Townspeople", "Merchants", "Guards", "Travelers"]
+        features = ["Buildings", "Market", "Inn", "Temple"]
+    else:
+        loc_type = random.choice(location_types)
+        inhabitants = ["Local creatures", "Wandering monsters", "Travelers"]
+        features = ["Distinctive landmarks", "Natural features", "Signs of past events"]
+    
+    return {
+        "type": loc_type,
+        "description": f"A {loc_type} known as {location_name}.",
+        "inhabitants": inhabitants,
+        "features": features,
+        "dangers": ["Unknown threats", "Natural hazards", "Hostile inhabitants"],
+        "atmosphere": "A place of mystery and adventure, waiting to be explored."
+    }

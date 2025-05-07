@@ -1,0 +1,3 @@
+2025-05-06 23:25:43,091 - dnd_assistant - INFO - logger.py:309 - Logging system initialized at level INFO
+2025-05-06 23:25:43,091 - dnd_assistant - INFO - main.py:44 - Initializing D&D AI Assistant with gpt-4
+2025-05-06 23:25:43,091 - dnd_assistant - INFO - main.py:83 - Running tavern scenario

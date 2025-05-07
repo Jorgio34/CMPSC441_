@@ -248,3 +248,21 @@ class QuestGenerationScenario:
         quest['location'] = location['name']
         
         return location
+
+def create_quest_scenario(game_state, location=None, quest_type=None, difficulty=None):
+    """
+    Factory function to create and initialize a quest generation scenario.
+    
+    Args:
+        game_state: Current game state
+        location: Optional location for the quest
+        quest_type: Optional quest type (e.g., "rescue", "fetch", "kill")
+        difficulty: Optional difficulty level (e.g., "easy", "medium", "hard")
+        
+    Returns:
+        Initialized QuestGenerationScenario instance
+    """
+    scenario = QuestGenerationScenario(game_state, location, quest_type, difficulty)
+    # Generate the quest immediately
+    scenario.generate_quest()
+    return scenario

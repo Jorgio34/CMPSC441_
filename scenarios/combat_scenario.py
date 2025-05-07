@@ -43,6 +43,8 @@ class CombatScenario:
                 prepared_enemies.append(enemy)
         return prepared_enemies
     
+    
+    
     def start_combat(self):
         """Initialize combat by rolling initiative for all participants"""
         self.is_active = True
@@ -287,6 +289,8 @@ class CombatScenario:
         else:
             return "other"
     
+    
+    
     def _extract_target(self, action_description):
         """Extract target name from action description"""
         # Simple extraction - in real implementation, use NLP or pattern matching
@@ -337,3 +341,20 @@ class CombatScenario:
             "environment": self.environment,
             "log": self.combat_log
         }
+    
+
+def create_combat_scenario(game_state, players, enemies, environment=None):
+    """
+    Factory function to create and initialize a combat scenario.
+    
+    Args:
+        game_state: Current game state
+        players: List of player character dictionaries
+        enemies: List of enemy dictionaries or monster names
+        environment: Optional description of combat environment
+        
+    Returns:
+        Initialized CombatScenario instance
+    """
+    scenario = CombatScenario(game_state, players, enemies, environment)
+    return scenario

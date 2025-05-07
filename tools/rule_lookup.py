@@ -10,6 +10,9 @@ import json
 import os
 from typing import Dict, List, Any, Optional, Union
 
+# Import from the knowledge module to access monster data
+from knowledge.retrieval import retrieve_monster
+
 # In a real implementation, this would use an actual database or API
 # For this demo, we'll use a simple dictionary of rules
 
@@ -95,6 +98,70 @@ RULES_DATABASE = {
     "resting": {
         "short_rest": "A short rest is a period of downtime, at least 1 hour long, during which a character does nothing more strenuous than eating, drinking, reading, and tending to wounds. A character can spend one or more Hit Dice at the end of a short rest, up to the character's maximum number of Hit Dice.",
         "long_rest": "A long rest is a period of extended downtime, at least 8 hours long, during which a character sleeps for at least 6 hours and performs no more than 2 hours of light activity. At the end of a long rest, a character regains all lost hit points and half their total Hit Dice (minimum of 1)."
+    }
+}
+
+# Simple monster database for the get_monster_stats function
+MONSTER_DATABASE = {
+    "goblin": {
+        "name": "Goblin",
+        "size": "Small",
+        "type": "humanoid",
+        "alignment": "neutral evil",
+        "ac": 15,
+        "hp": "7 (2d6)",
+        "speed": "30 ft.",
+        "abilities": {"str": 8, "dex": 14, "con": 10, "int": 10, "wis": 8, "cha": 8},
+        "skills": "Stealth +6",
+        "senses": "darkvision 60 ft.",
+        "languages": "Common, Goblin",
+        "cr": 0.25,
+        "traits": ["Nimble Escape: The goblin can take the Disengage or Hide action as a bonus action on each of its turns."],
+        "actions": ["Scimitar: Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage.",
+                    "Shortbow: Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage."],
+        "description": "Goblins are small, black-hearted humanoids that lair in despoiled dungeons and other dismal settings. Individually weak, they gather in large numbers to torment other creatures."
+    },
+    "owlbear": {
+        "name": "Owlbear",
+        "size": "Large",
+        "type": "monstrosity",
+        "alignment": "unaligned",
+        "ac": 13,
+        "hp": "59 (7d10 + 21)",
+        "speed": "40 ft.",
+        "abilities": {"str": 20, "dex": 12, "con": 17, "int": 3, "wis": 12, "cha": 7},
+        "skills": "Perception +3",
+        "senses": "darkvision 60 ft.",
+        "languages": "—",
+        "cr": 3,
+        "traits": ["Keen Sight and Smell: The owlbear has advantage on Wisdom (Perception) checks that rely on sight or smell."],
+        "actions": ["Multiattack: The owlbear makes two attacks: one with its beak and one with its claws.",
+                    "Beak: Melee Weapon Attack: +7 to hit, reach 5 ft., one creature. Hit: 10 (1d10 + 5) piercing damage.",
+                    "Claws: Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) slashing damage."],
+        "description": "An owlbear's screech echoes through dark valleys and benighted forests, piercing the quiet night to announce the death of its prey."
+    },
+    "dragon, red": {
+        "name": "Red Dragon",
+        "size": "Huge",
+        "type": "dragon",
+        "alignment": "chaotic evil",
+        "ac": 19,
+        "hp": "256 (19d12 + 133)",
+        "speed": "40 ft., climb 40 ft., fly 80 ft.",
+        "abilities": {"str": 27, "dex": 10, "con": 25, "int": 16, "wis": 13, "cha": 21},
+        "saves": "Dex +6, Con +13, Wis +7, Cha +11",
+        "skills": "Perception +13, Stealth +6",
+        "immunities": "fire",
+        "senses": "blindsight 60 ft., darkvision 120 ft.",
+        "languages": "Common, Draconic",
+        "cr": 17,
+        "traits": ["Legendary Resistance (3/Day): If the dragon fails a saving throw, it can choose to succeed instead."],
+        "actions": ["Multiattack: The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws.",
+                    "Bite: Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 7 (2d6) fire damage.",
+                    "Claw: Melee Weapon Attack: +14 to hit, reach 5 ft., one target. Hit: 15 (2d6 + 8) slashing damage.",
+                    "Tail: Melee Weapon Attack: +14 to hit, reach 15 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
+                    "Frightful Presence: Each creature of the dragon's choice within 120 feet of it must succeed on a DC 19 Wisdom saving throw or be frightened for 1 minute.",
+                    "Fire Breath (Recharge 5-6): The dragon exhales fire in a 60-foot cone. Each creature in that area must make a DC 21 Dexterity saving throw, taking 63 (18d6) fire damage on a failed save, or half as much damage on a successful one."]
     }
 }
 
@@ -263,3 +330,77 @@ def get_difficulty_class(difficulty: str) -> str:
             return f"{dc_name.replace('_', ' ').title()}: {dc_value}"
     
     return f"Difficulty level '{difficulty}' not found. Available levels: {', '.join(dcs.keys())}"
+
+
+def get_monster_stats(monster_name: str) -> Dict[str, Any]:
+    """
+    Retrieve stats for a specific monster.
+    
+    Args:
+        monster_name: The name of the monster to retrieve stats for
+        
+    Returns:
+        Dictionary containing monster stats or an empty dict if not found
+    """
+    # Convert the monster name to lowercase for case-insensitive matching
+    monster_lower = monster_name.lower()
+    
+    # First try to retrieve from our local database
+    for key, monster_data in MONSTER_DATABASE.items():
+        if monster_lower == key.lower() or monster_lower == monster_data.get("name", "").lower():
+            return monster_data
+    
+    # If not found in local database, try to retrieve from the knowledge retrieval system
+    try:
+        # Try to use the retrieve_monster function if it's available
+        monster_data = retrieve_monster(monster_name)
+        if monster_data:
+            return monster_data
+    except (ImportError, NameError):
+        # If the import failed or the function doesn't exist, we'll fall back to defaults
+        pass
+    
+    # If not found, return a minimal default stat block
+    return {
+        "name": monster_name,
+        "size": "Medium",
+        "type": "unknown",
+        "alignment": "unaligned",
+        "ac": 10,
+        "hp": "10 (1d8+2)",
+        "speed": "30 ft.",
+        "abilities": {"str": 10, "dex": 10, "con": 10, "int": 10, "wis": 10, "cha": 10},
+        "senses": "passive Perception 10",
+        "languages": "Common",
+        "cr": 0.5,
+        "actions": [f"{monster_name} Attack: Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 3 (1d6) damage."],
+        "description": f"A mysterious creature known as {monster_name}."
+    }
+
+
+def get_ability_modifier(ability_score: int) -> int:
+    """
+    Calculate the ability modifier for a given ability score.
+    
+    Args:
+        ability_score: The ability score (1-30)
+        
+    Returns:
+        The ability modifier
+    """
+    # Standard D&D 5e formula: (score - 10) / 2, rounded down
+    return (ability_score - 10) // 2
+
+
+def get_proficiency_bonus(level: int) -> int:
+    """
+    Calculate the proficiency bonus for a given character level.
+    
+    Args:
+        level: The character level (1-20)
+        
+    Returns:
+        The proficiency bonus
+    """
+    # Standard D&D 5e formula: 2 + (level - 1) // 4
+    return 2 + (level - 1) // 4
