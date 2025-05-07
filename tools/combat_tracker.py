@@ -936,3 +936,6 @@ class Spell:
             "target_results": target_results,
             "details": "\n".join(target_msgs)
         }
+    
+    
+

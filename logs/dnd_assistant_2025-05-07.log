@@ -1,0 +1,16 @@
+2025-05-07 00:01:47,124 - dnd_assistant - INFO - logger.py:309 - Logging system initialized at level INFO
+2025-05-07 00:01:47,124 - dnd_assistant - INFO - main.py:42 - Initializing D&D AI Assistant with gpt-3.5-turbo
+2025-05-07 00:01:47,125 - dnd_assistant - INFO - llm_integration.py:19 - Initialized LLM integration with model: gpt-3.5-turbo
+2025-05-07 00:01:47,125 - dnd_assistant - INFO - main.py:140 - Running combat scenario
+2025-05-07 00:13:23,287 - dnd_assistant - INFO - logger.py:309 - Logging system initialized at level INFO
+2025-05-07 00:13:23,287 - dnd_assistant - INFO - main.py:42 - Initializing D&D AI Assistant with gpt-3.5-turbo
+2025-05-07 00:13:23,287 - dnd_assistant - INFO - llm_integration.py:19 - Initialized LLM integration with model: gpt-3.5-turbo
+2025-05-07 00:13:23,287 - dnd_assistant - INFO - main.py:140 - Running combat scenario
+2025-05-07 00:13:23,287 - dnd_assistant - INFO - llm_integration.py:41 - Generating response for prompt: Combat: Tordek tries to attack the, but they can't...
+2025-05-07 00:13:23,287 - dnd_assistant - INFO - llm_integration.py:41 - Generating response for prompt: Combat: Mialee casts magic. The spell takes effect...
+2025-05-07 00:14:30,388 - dnd_assistant - INFO - logger.py:309 - Logging system initialized at level INFO
+2025-05-07 00:14:30,388 - dnd_assistant - INFO - main.py:42 - Initializing D&D AI Assistant with gpt-3.5-turbo
+2025-05-07 00:14:30,388 - dnd_assistant - INFO - llm_integration.py:19 - Initialized LLM integration with model: gpt-3.5-turbo
+2025-05-07 00:14:30,389 - dnd_assistant - INFO - main.py:186 - Running quest generation scenario
+2025-05-07 00:14:30,389 - dnd_assistant - INFO - llm_integration.py:41 - Generating response for prompt: Generate quest: rescue in ancient ruins, medium di...
+2025-05-07 00:14:30,389 - dnd_assistant - INFO - llm_integration.py:41 - Generating response for prompt: Generate 3 different ways the players might respon...

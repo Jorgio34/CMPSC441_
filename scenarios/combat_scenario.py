@@ -3,7 +3,7 @@
 import random
 from utils.logger import logger
 from tools.dice import roll_dice
-from tools.combat_tracker import CombatTracker
+from tools.simple_combat_tracker import CombatTracker
 from tools.rule_lookup import get_monster_stats, get_ability_modifier
 from knowledge.retrieval import retrieve_combat_descriptions
 
