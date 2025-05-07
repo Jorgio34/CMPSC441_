@@ -1,26 +1,22 @@
 # core/llm_integration.py
 
 import os
-import openai
+import random
 from typing import Dict, List, Any, Optional
 from utils.logger import logger
 
 class LLMIntegration:
-    """Class to handle interactions with the language model API"""
+    """Mock class to handle interactions with language models without requiring OpenAI package"""
     
     def __init__(self, model_name="gpt-3.5-turbo", api_key=None):
         """Initialize the LLM integration"""
-        # Set API key from parameter or environment variable
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not self.api_key:
-            logger.warning("No OpenAI API key provided. LLM functionality will not work.")
-            
         self.model_name = model_name
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         
-        # Initialize OpenAI client if API key is available
-        if self.api_key:
-            openai.api_key = self.api_key
-            logger.info(f"Initialized LLM integration with model: {model_name}")
+        if not self.api_key:
+            logger.warning("No API key provided. Using mock responses.")
+        
+        logger.info(f"Initialized LLM integration with model: {model_name}")
         
     def generate_response(self, 
                          prompt: str, 
@@ -29,7 +25,7 @@ class LLMIntegration:
                          max_tokens: int = 500,
                          conversation_history: List[Dict[str, str]] = None) -> str:
         """
-        Generate a response from the language model
+        Generate a mock response that simulates what a language model would produce
         
         Args:
             prompt: The user's input or query
@@ -41,45 +37,39 @@ class LLMIntegration:
         Returns:
             Generated text response
         """
-        if not self.api_key:
-            logger.warning("Cannot generate response: No API key provided")
-            return "[LLM would generate a response here with temp={temperature}]"
+        # Log the request
+        logger.info(f"Generating response for prompt: {prompt[:50]}...")
+        
+        # Create mock responses based on the prompt content
+        if "tavern" in prompt.lower():
+            responses = [
+                "The tavern is filled with the lively chatter of adventurers sharing tales of their exploits. A bard plays a cheerful tune in the corner while patrons clink mugs and laugh heartily.",
+                "You notice several patrons giving you curious glances. The tavern has a cozy atmosphere with a crackling fireplace and the aroma of fresh bread and stew fills the air.",
+                "The tavern keeper nods in your direction as you enter. The establishment is moderately busy, with a mix of locals and travelers enjoying drinks and meals."
+            ]
+        elif "combat" in prompt.lower() or "attack" in prompt.lower():
+            responses = [
+                "The sword slices through the air with deadly precision, catching the enemy off guard. Blood sprays as the blade makes contact, and the creature howls in pain.",
+                "With impressive agility, the fighter dodges the incoming attack before countering with a powerful thrust. The sound of steel meeting flesh echoes in the chamber.",
+                "Magic crackles through the air as the spell takes effect. The enemy is engulfed in arcane energy, their screams muffled by the roaring flames."
+            ]
+        elif "quest" in prompt.lower():
+            responses = [
+                "A wealthy merchant requires brave adventurers to recover a shipment stolen by bandits. The goods are believed to be hidden in a camp to the north.",
+                "Mysterious disappearances have plagued the village for weeks. The mayor suspects a cult operating from the nearby caves and seeks heroes to investigate.",
+                "An ancient artifact of great power has been discovered in ruins to the east. You are tasked with retrieving it before it falls into the wrong hands."
+            ]
+        else:
+            responses = [
+                "Your request has been processed, and I've generated a response appropriate to the context.",
+                "I've considered your input carefully and created a narrative that fits the scenario.",
+                "Based on your prompt, I've crafted a response that should meet your expectations for this D&D scenario."
+            ]
             
-        try:
-            # Prepare messages for the LLM
-            messages = []
-            
-            # Add system message if provided
-            if system_message:
-                messages.append({"role": "system", "content": system_message})
-            
-            # Add conversation history if provided
-            if conversation_history:
-                messages.extend(conversation_history)
-            
-            # Add the current prompt
-            messages.append({"role": "user", "content": prompt})
-            
-            # Generate response using the OpenAI API
-            response = openai.ChatCompletion.create(
-                model=self.model_name,
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens
-            )
-            
-            # Extract and return the generated content
-            response_text = response.choices[0].message.content
-            
-            # Log usage for tracking
-            tokens_used = response.usage.total_tokens
-            logger.info(f"LLM generated response ({tokens_used} tokens used)")
-            
-            return response_text
-            
-        except Exception as e:
-            logger.error(f"Error generating LLM response: {str(e)}")
-            return f"[Error generating response: {str(e)}]"
+        # Randomize response selection based on temperature
+        randomness = min(max(temperature, 0.1), 1.0)  # Keep between 0.1 and 1.0
+        weighted_idx = int(random.random() / randomness) % len(responses)
+        return responses[weighted_idx]
     
     def generate_game_master_response(self, 
                                      scene_description: str, 
@@ -98,31 +88,16 @@ class LLMIntegration:
         Returns:
             Generated game master response
         """
-        # Construct the system message with D&D game master instructions
-        system_message = """
-        You are an expert Dungeons & Dragons Game Master with years of experience.
-        Create immersive, atmospheric descriptions and engaging NPC interactions.
-        Keep responses concise but vivid, focusing on elements that advance the story
-        or provide meaningful choices to players. Use sensory details and appropriate
-        fantasy language to make the world come alive.
-        """
-        
-        # Add world context if provided
-        prompt = scene_description
+        # Create a prompt based on the inputs
+        prompt = f"Scene: {scene_description}"
         if world_context:
-            prompt = f"World Context: {world_context}\n\nCurrent Scene: {scene_description}"
-        
-        # Add player input if provided
+            prompt += f"\nWorld Context: {world_context}"
         if player_input:
-            prompt += f"\n\nPlayer: {player_input}\n\nYour response as Game Master:"
-        
-        # Generate the response
-        return self.generate_response(
-            prompt=prompt,
-            system_message=system_message,
-            temperature=temperature,
-            max_tokens=750
-        )
+            prompt += f"\nPlayer Input: {player_input}"
+            
+        # Generate response with tavern context
+        prompt += "\nTavern scenario"
+        return self.generate_response(prompt, temperature=temperature)
     
     def generate_npc_dialogue(self,
                              npc_name: str,
@@ -143,29 +118,30 @@ class LLMIntegration:
         Returns:
             Generated NPC dialogue response
         """
-        # Create system message for the NPC
-        system_message = f"""
-        You are roleplaying as {npc_name}, a character in a Dungeons & Dragons game.
-        {npc_description}
-        
-        Respond in character to the player's input. Keep your response concise
-        but true to your character's personality. Don't narrate your actions,
-        just provide your dialogue as if you were speaking directly to the player.
-        """
-        
-        # Create the prompt
-        prompt = f"The player says to you: {player_input}"
-        
-        # Generate the response
-        npc_response = self.generate_response(
-            prompt=prompt,
-            system_message=system_message,
-            temperature=temperature,
-            max_tokens=300,
-            conversation_history=conversation_history
-        )
-        
-        return npc_response
+        # NPC dialogue responses based on innkeeper/tavern owner archetype
+        if "job" in player_input.lower() or "quest" in player_input.lower() or "work" in player_input.lower():
+            responses = [
+                f"Aye, there's talk of bandits in the hills. The merchant's guild is offering a bounty for anyone brave enough to clear the roads.",
+                f"*lowers voice* If you're looking for work, I heard the local mage is seeking adventurers for a delicate matter. Pays well, but could be dangerous.",
+                f"The town guard is stretched thin these days. Captain Harlow was in here yesterday, saying they might hire swords for a special task."
+            ]
+        elif "rumor" in player_input.lower() or "news" in player_input.lower():
+            responses = [
+                f"*wipes a mug clean* Strange lights have been seen in the old ruins to the north. Some say treasure hunters disturbed something ancient.",
+                f"Word is the baron's son hasn't been seen in a fortnight. Official story is he's visiting relatives, but that's not what the servants say.",
+                f"*leans in closer* Between you and me, there's something odd about those traveling merchants that arrived yesterday. They ask too many questions."
+            ]
+        else:
+            responses = [
+                f"*nods curtly* What can I help you with? The stew is fresh and the ale is cold, if you're interested.",
+                f"You're not from around here, are ya? Well, make yourself comfortable. Just keep the peace or you'll answer to me.",
+                f"*eyes you carefully* We don't get many adventurers these days. Something I can help you with?"
+            ]
+            
+        # Randomize response
+        randomness = min(max(temperature, 0.1), 1.0)
+        weighted_idx = int(random.random() / randomness) % len(responses)
+        return responses[weighted_idx]
     
     def generate_combat_narration(self,
                                  action_description: str,
@@ -182,29 +158,42 @@ class LLMIntegration:
         Returns:
             Generated combat narration
         """
-        # Create system message for combat narration
-        system_message = """
-        You are narrating exciting combat in a Dungeons & Dragons game.
-        Describe actions vividly with appropriate fantasy combat terminology.
-        Focus on the impact and sensation of attacks, spells, and movements.
-        Keep descriptions concise but evocative, emphasizing dramatic moments.
+        prompt = f"Combat: {action_description}"
+        return self.generate_response(prompt, temperature=temperature)
+        
+    def generate_quest(self,
+                      location: str,
+                      quest_type: str,
+                      difficulty: str,
+                      temperature: float = 0.7) -> Dict[str, Any]:
         """
+        Generate a D&D quest
         
-        # Create the prompt
-        environment = combat_state.get("environment", "the battlefield")
-        
-        prompt = f"""
-        Combat environment: {environment}
-        
-        Action that occurred: {action_description}
-        
-        Narrate this combat action in an exciting way:
+        Args:
+            location: The location where the quest takes place
+            quest_type: Type of quest (rescue, fetch, kill, etc.)
+            difficulty: Difficulty level of the quest
+            temperature: Controls randomness (0.0-1.0)
+            
+        Returns:
+            Dictionary containing quest details
         """
+        prompt = f"Generate quest: {quest_type} in {location}, {difficulty} difficulty"
+        quest_description = self.generate_response(prompt, temperature=temperature)
         
-        # Generate the response
-        return self.generate_response(
-            prompt=prompt,
-            system_message=system_message,
-            temperature=temperature,
-            max_tokens=200
-        )
+        if quest_type == "rescue":
+            title = "The Captive's Plea"
+        elif quest_type == "fetch":
+            title = "The Lost Artifact"
+        elif quest_type == "kill":
+            title = "Beast Hunter"
+        else:
+            title = "Adventure Awaits"
+            
+        return {
+            "title": title,
+            "description": quest_description,
+            "type": quest_type,
+            "difficulty": difficulty,
+            "location": location
+        }

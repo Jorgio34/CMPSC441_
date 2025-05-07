@@ -1,3 +1,19 @@
 2025-05-06 23:25:43,091 - dnd_assistant - INFO - logger.py:309 - Logging system initialized at level INFO
 2025-05-06 23:25:43,091 - dnd_assistant - INFO - main.py:44 - Initializing D&D AI Assistant with gpt-4
 2025-05-06 23:25:43,091 - dnd_assistant - INFO - main.py:83 - Running tavern scenario
+2025-05-06 23:48:34,954 - dnd_assistant - INFO - logger.py:309 - Logging system initialized at level INFO
+2025-05-06 23:48:34,954 - dnd_assistant - INFO - main.py:42 - Initializing D&D AI Assistant with gpt-3.5-turbo
+2025-05-06 23:48:34,954 - dnd_assistant - INFO - llm_integration.py:19 - Initialized LLM integration with model: gpt-3.5-turbo
+2025-05-06 23:48:34,954 - dnd_assistant - INFO - main.py:103 - Running tavern scenario
+2025-05-06 23:48:34,954 - dnd_assistant - INFO - llm_integration.py:41 - Generating response for prompt: Scene: The Dragon's Rest tavern is bustling with a...
+2025-05-06 23:48:34,954 - dnd_assistant - INFO - llm_integration.py:41 - Generating response for prompt: Create a brief, unexpected event that happens in t...
+2025-05-06 23:50:19,564 - dnd_assistant - INFO - logger.py:309 - Logging system initialized at level INFO
+2025-05-06 23:50:19,565 - dnd_assistant - INFO - main.py:42 - Initializing D&D AI Assistant with gpt-3.5-turbo
+2025-05-06 23:50:19,565 - dnd_assistant - INFO - llm_integration.py:19 - Initialized LLM integration with model: gpt-3.5-turbo
+2025-05-06 23:50:19,565 - dnd_assistant - INFO - main.py:103 - Running tavern scenario
+2025-05-06 23:50:19,565 - dnd_assistant - INFO - llm_integration.py:41 - Generating response for prompt: Scene: The Dragon's Rest tavern is bustling with a...
+2025-05-06 23:50:19,566 - dnd_assistant - INFO - llm_integration.py:41 - Generating response for prompt: Create a brief, unexpected event that happens in t...
+2025-05-06 23:50:34,960 - dnd_assistant - INFO - logger.py:309 - Logging system initialized at level INFO
+2025-05-06 23:50:34,961 - dnd_assistant - INFO - main.py:42 - Initializing D&D AI Assistant with gpt-3.5-turbo
+2025-05-06 23:50:34,961 - dnd_assistant - INFO - llm_integration.py:19 - Initialized LLM integration with model: gpt-3.5-turbo
+2025-05-06 23:50:34,961 - dnd_assistant - INFO - main.py:140 - Running combat scenario
