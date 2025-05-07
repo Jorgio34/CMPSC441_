@@ -3,9 +3,6 @@ openai>=1.0.0
 langchain>=0.0.267
 python-dotenv>=1.0.0
 
-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 =REMOVED_API_KEY
-
-# Vector database and embeddings
 faiss-cpu>=1.7.4
 sentence-transformers>=2.2.2
 
