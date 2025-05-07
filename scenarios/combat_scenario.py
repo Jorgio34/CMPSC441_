@@ -207,8 +207,12 @@ class CombatScenario:
         
         action, target_name = tactical_agent.determine_action()
         
-        if action == "attack":
+        if action == "attack" and target_name:
             target = self._find_combatant(target_name)
+
+            # Check if target is valid
+            if not target:
+                return f"{enemy['name']} looks for a target but finds none."
             
             # Roll attack
             attack_mod = get_ability_modifier(enemy['combatant_data'].get('strength', 10))
@@ -240,13 +244,17 @@ class CombatScenario:
                 
             return result
         
-        elif action == "spell":
+        elif action == "spell" and target_name:
             # Similar to player spell casting but for enemies
             spell_name = enemy['combatant_data'].get('spell_name', 'an unknown spell')
             spell_damage = enemy['combatant_data'].get('spell_damage', '2d6')
             spell_save_dc = enemy['combatant_data'].get('spell_save_dc', 12)
             
             target = self._find_combatant(target_name)
+
+            # Check if target is valid
+            if not target:
+                return f"{enemy['name']} begins to cast a spell, but finds no target."
             
             save_ability = enemy['combatant_data'].get('spell_save_ability', 'dexterity')
             save_mod = get_ability_modifier(target['combatant_data'].get(save_ability, 10))

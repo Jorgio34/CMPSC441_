@@ -10,6 +10,52 @@ An AI-powered assistant for Dungeons & Dragons that helps with game mastering, a
 - **NPC Simulator**: Creates realistic NPCs with consistent personalities and motivations
 - **Knowledge Base**: Uses RAG (Retrieval Augmented Generation) to incorporate D&D lore and rules
 
+## Running the D&D AI Assistant
+
+This project demonstrates AI methods for Dungeons & Dragons assistance through several scenarios.
+
+### Setup
+
+1. Clone the repository
+2. Install required packages:
+   ```
+   pip install -r requirements.txt
+   ```
+   Note: The project uses a mock LLM integration that doesn't require an OpenAI API key.
+
+### Available Commands
+
+Run any of the following commands from the project root directory:
+
+1. Tavern Scenario (default):
+   ```
+   python main.py
+   ```
+
+2. Combat Scenario:
+   ```
+   python main.py --scenario combat
+   ```
+
+3. Quest Generation:
+   ```
+   python main.py --scenario quest
+   ```
+
+4. Run with debug logging:
+   ```
+   python main.py --debug
+   ```
+
+### Expected Output
+
+Each scenario demonstrates different AI methods:
+- The tavern scenario shows NPC interactions and world-building
+- The combat scenario demonstrates the tactical combat system
+- The quest scenario shows dynamic quest generation
+
+For detailed information about the implementation and AI methods used, see the Project.md report.
+
 ## System Architecture
 
 The system is designed with a modular architecture:
@@ -163,31 +209,6 @@ attack_action = {
 turn_result = combat_manager.process_turn(attack_action)
 print(turn_result)
 ```
-
-## Installation and Setup
-
-1. Clone the repository:
-```
-git clone https://github.com/yourusername/dnd-ai-assistant.git
-cd dnd-ai-assistant
-```
-
-2. Install dependencies:
-```
-pip install -r requirements.txt
-```
-
-3. Run the main application:
-```
-python main.py --scenario tavern
-```
-
-## Command Line Options
-
-- `--scenario`: Type of scenario to run (tavern, combat, quest, dungeon)
-- `--model`: LLM model to use (default: gpt-4)
-- `--debug`: Enable debug logging
-- `--config`: Configuration profile to use
 
 ## Project Structure
 
